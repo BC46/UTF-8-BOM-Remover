@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
-#include <filesystem>
 #include <cassert>
+#include <cstring>
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
@@ -9,9 +9,9 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    char bom[4] { -17, -69, -65, NULL };
+    char bom[4] { -17, -69, -65, '\0' };
     char buffer[4];
-    buffer[3] = NULL;
+    buffer[3] = '\0';
 
     std::string filePath(argv[1]);
     assert(std::filesystem::exists(filePath));
