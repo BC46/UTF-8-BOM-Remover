@@ -13,14 +13,14 @@ int main(int argc, char *argv[]) {
     char buffer[4];
     buffer[3] = NULL;
 
-    std::ifstream fileIn;
-
     std::string filePath(argv[1]);
     assert(std::filesystem::exists(filePath));
 
     std::string newName(std::string(filePath) + "_tmp");
 
     rename(std::string(filePath).c_str(), newName.c_str());
+
+    std::ifstream fileIn;
     fileIn.open(newName, std::ios::binary | std::ios::out);
 
     fileIn.read(buffer, 3);
@@ -31,9 +31,8 @@ int main(int argc, char *argv[]) {
         std::ofstream fileOut;
         fileOut.open(filePath, std::ios::binary | std::ios::out);
 
-        for (char character; fileIn.get(character);) {
+        for (char character; fileIn.get(character);)
             fileOut.write(&character, 1);
-        }
 
         fileIn.close();
         fileOut.close();
