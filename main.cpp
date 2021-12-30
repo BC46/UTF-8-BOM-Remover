@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include <cassert>
-#include <cstring>
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
@@ -16,9 +15,9 @@ int main(int argc, char *argv[]) {
     std::string filePath(argv[1]);
     assert(std::filesystem::exists(filePath));
 
-    std::string newName(std::string(filePath) + "_tmp");
+    std::string newName(filePath + "_tmp");
 
-    rename(std::string(filePath).c_str(), newName.c_str());
+    rename(filePath.c_str(), newName.c_str());
 
     std::ifstream fileIn;
     fileIn.open(newName, std::ios::binary | std::ios::out);
@@ -39,7 +38,7 @@ int main(int argc, char *argv[]) {
         remove(newName.c_str());
     } else {
         fileIn.close();
-        rename(newName.c_str(), std::string(filePath).c_str());
+        rename(newName.c_str(), filePath.c_str());
     }
 
     return 0;
