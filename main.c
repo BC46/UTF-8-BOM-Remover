@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
     if (fileExists(filePath) == FALSE)
         return 0;
 
-    char newName[MAX_PATH];
+    char newName[MAX_PATH] = { 0 };
     strcpy_s(newName, MAX_PATH, argv[1]);
     strcat_s(newName, MAX_PATH, "_tmp");
 
