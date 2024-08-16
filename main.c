@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <string.h>
 
-inline BOOL fileExists (char* name) {
-    return ( _access( name, 0 ) != ENOENT );
+inline BOOL canAccessFile(char* path) {
+    return _access(path, 0) == 0 ? TRUE : FALSE;
 }
 
 int main(int argc, char *argv[]) {
@@ -19,11 +19,11 @@ int main(int argc, char *argv[]) {
 
     char* filePath = argv[1];
 
-    if (fileExists(filePath) == FALSE)
+    if (canAccessFile(filePath) == FALSE)
         return 0;
 
     char newName[MAX_PATH] = { 0 };
-    strcpy_s(newName, MAX_PATH, argv[1]);
+    strcpy_s(newName, MAX_PATH, filePath);
     strcat_s(newName, MAX_PATH, "_tmp");
 
     rename(filePath, newName);
