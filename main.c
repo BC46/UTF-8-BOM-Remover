@@ -4,39 +4,46 @@
 #include <stdio.h>
 #include <string.h>
 
-inline BOOL canAccessFile(char* path) {
-    return _access(path, 0) == 0 ? TRUE : FALSE;
+BOOL canAccessFile(wchar_t* path) {
+    return _waccess(path, 0) == 0 ? TRUE : FALSE;
 }
 
-int main(int argc, char *argv[]) {
+int wmain(int argc, wchar_t *argv[]) {
+    char bom[4] = { '\xEF', '\xBB', '\xBF', '\0' };
+    char buffer[4] = { 0 };
+    wchar_t* filePath;
+    wchar_t newName[MAX_PATH];
+
+    char c;
+
+    FILE* fileIn;
+    FILE* fileOut;
+
     if (argc < 2) {
         puts("Usage: utf8-bom-remover.exe file-path");
         return 0;
     }
 
-    char bom[4] = { '\xEF', '\xBB', '\xBF', '\0' };
-    char buffer[4] = { 0 };
-
-    char* filePath = argv[1];
+    filePath = argv[1];
 
     if (canAccessFile(filePath) == FALSE)
         return 0;
 
-    char newName[MAX_PATH] = { 0 };
-    strcpy_s(newName, MAX_PATH, filePath);
-    strcat_s(newName, MAX_PATH, "_tmp");
+    ZeroMemory(newName, MAX_PATH * sizeof(wchar_t));
+    wcscpy(newName, filePath);
+    wcscpy(newName, L"_tmp");
 
-    rename(filePath, newName);
+    _wrename(filePath, newName);
 
-    FILE* fileIn = fopen(newName, "r");
+    fileIn = _wfopen(newName, L"r");
     fread(buffer, sizeof(char), 3, fileIn);
 
     if (strcmp(buffer, bom) == 0) {
         fseek(fileIn, 3, SEEK_SET);
 
-        FILE* fileOut = fopen(filePath, "w");
+        fileOut = _wfopen(filePath, L"w");
 
-        char c = fgetc(fileIn);
+        c = fgetc(fileIn);
 
         while (c != EOF) {
             fputc(c, fileOut);
@@ -45,10 +52,10 @@ int main(int argc, char *argv[]) {
 
         fclose(fileIn);
         fclose(fileOut);
-        remove(newName);
+        _wremove(newName);
     } else {
         fclose(fileIn);
-        rename(newName, filePath);
+        _wrename(newName, filePath);
     }
 
     return 0;
